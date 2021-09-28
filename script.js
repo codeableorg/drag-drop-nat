@@ -3,70 +3,70 @@ const STORE = {
   notes: [
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 1",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 2",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 3",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 4",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 5",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 6",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 7",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 9",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 9",
       body: "A content",
       color: "white",
       deleted: false,
     },
     {
       id: uuidv4(),
-      title: "A note",
+      title: "A note - 10",
       body: "A content",
       color: "white",
       deleted: false,
@@ -153,12 +153,14 @@ function renderNote(note, isTrashed) {
     </footer>`;
   }
 
-  return `<li class="note" style="background-color: var(--${note.color})" data-id="${note.id}">
+  return `<li class="note" style="background-color: var(--${note.color})" data-id="${note.id}" draggable="true">
     <h3 class="note-title">${note.title}</h3>
     <p class="note-body">${note.body}</p>
     ${footer}
   </li>`;
 }
+
+
 
 function renderNotes() {
   const notes = STORE.notes.filter((note) => !note.deleted);
@@ -368,6 +370,72 @@ function listenAsideClick() {
   });
 }
 
+/*----------------------------------------------------*/
+/*Drag and drop*/
+
+function notesAddEvenListener() {
+  const notes = document.querySelector(".notes");
+  console.log(notes);
+  notes.addEventListener("dragstart", dragStart);
+  notes.addEventListener("dragend", dragEnd);
+  notes.addEventListener("dragenter", dragEnter);
+  notes.addEventListener("dragleave", dragLeave);
+  notes.addEventListener("dragover", dragOver);
+  notes.addEventListener("drop", dragDrop);
+}
+
+function dragStart(e) {
+  const note = e.target.closest(".note");
+  if (note) {
+    e.dataTransfer.setData("text/plain", note.innerHTML);
+    note.classList.add("grabbing");
+    console.log(note)
+  }
+}
+
+function dragEnd(e) {
+  const note = e.target.closest(".note");
+  if (note) {
+    note.classList.remove("grabbing");
+  }
+}
+
+function dragOver(e) {
+  e.preventDefault();
+}
+
+function dragEnter(e) {
+  const note = e.target.closest(".note");
+  if (note) {
+    note.classList.add("over");
+  }
+}
+
+function dragLeave(e) {
+  const note = e.target.closest(".note");
+  if (note) {
+    note.classList.remove("over");
+  }
+}
+
+function dragOver(e) {
+  e.preventDefault();
+}
+
+function dragDrop(e) {
+  const note = e.target.closest(".note");
+  if (note) {
+    const dragNote = document.querySelector(".grabbing");
+    note.classList.remove("over");
+    const cloneDrag = dragNote.cloneNode();
+    cloneDrag.innerHTML = dragNote.innerHTML;
+    const clonedNote = note.cloneNode();
+    clonedNote.innerHTML = note.innerHTML;
+    dragNote.replaceWith(clonedNote);
+    note.replaceWith(cloneDrag);
+  }
+}
+
 /*
  *
  * Main Functions
@@ -381,6 +449,7 @@ function addEventListeners() {
   addFormTooltipListener();
   listenNoteFormSubmit();
   listenAsideClick();
+  notesAddEvenListener();
 }
 
 function init() {

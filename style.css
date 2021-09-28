@@ -7,3 +7,12 @@
 @import url("./assets/stylesheets/tooltip.css");
 @import url("./assets/stylesheets/utils.css");
 @import url("./assets/stylesheets/animations.css");
+
+.grabbing {
+    cursor: grabbing;
+  }
+
+.over {
+  background: grey;
+  border-style: dashed;
+}
